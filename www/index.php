@@ -41,7 +41,7 @@ function scan_files($path = '.') {
 		if ($fname === '.' || $fname === '..') {
 			continue;
 		}
-		$filepath = $path . '/' . $fname;
+		$filepath = $path === '.' ? $fname : $path . '/' . $fname;
 		if (is_dir($filepath)) {
 			$media = array_merge($media, scan_files($filepath));
 		} else if (is_file($filepath)) {
@@ -126,7 +126,8 @@ $all_media = scan_files();
 
 <?php
 foreach ($all_media as &$f) {
-	echo('<a href="/index.php?file=' . urlencode($f) . '">' . $f . '</a><br/>' . "\n");
+	$pathparts = pathinfo($f);
+	echo('<a href="/index.php?file=' . urlencode($f) . '">' . $pathparts['basename'] . '</a><br/>' . "\n");
 }
 
 ?>
