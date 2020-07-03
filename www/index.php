@@ -1,4 +1,5 @@
 <?php
+$playfile = null;
 $video = null;
 $audio = null;
 $mimetype = null;
@@ -7,28 +8,32 @@ if (isset($_GET['file'])) {
 	$pathparts = pathinfo($file);
 	switch ($pathparts['extension']) {
 	case 'mp4':
-		$video = $file;
+		$playfile = $file;
 		$mimetype = 'video/mp4';
 		break;
 	case 'webm':
-		$video = $file;
+		$playfile = $file;
 		$mimetype = 'video/webm';
 		break;
 	case 'flac':
-		$audio = $file;
+		$playfile = $file;
 		$mimetype = 'audio/flac';
 		break;
 	case 'mp3':
-		$audio = $file;
+		$playfile = $file;
 		$mimetype = 'audio/mp3';
 		break;
 	case 'aac':
 	case 'm4a':
-		$audio = $file;
-		$mimetype = 'audio/aac';
+		$playfile = $file;
+		$mimetype = 'audio/mp4';
+		break;
+	case 'ogg':
+		$playfile = $file;
+		$mimetype = 'audio/ogg';
 		break;
 	default:
-		$video = $file;
+		$playfile = $file;
 		$mimetype = 'video/mp4'; // ?? best guess ??
 		break;
 	}
@@ -48,6 +53,7 @@ function scan_files($path = '.') {
 			$pathparts = pathinfo($filepath);
 			if (
 				$pathparts['extension'] === 'mp4' || 
+				$pathparts['extension'] === 'ogg' || 
 				$pathparts['extension'] === 'webm' ||
 				$pathparts['extension'] === 'flac' ||
 				$pathparts['extension'] === 'mp3' ||
@@ -70,24 +76,26 @@ $all_media = scan_files();
   <link href="https://vjs.zencdn.net/7.8.3/video-js.css" rel="stylesheet" />
 
   <!-- If you'd like to support IE8 (for Video.js versions prior to v7) -->
-  <script src="https://vjs.zencdn.net/ie8/1.1.2/videojs-ie8.min.js"></script>
+  <script type="text/javascript" src="https://vjs.zencdn.net/ie8/1.1.2/videojs-ie8.min.js"></script>
+  <script type="text/javascript" src="paulflix.js"></script>
 </head>
 
 <body>
-<?php if ($video) { ?>
+<?php
+if ($mimetype !== null) { ?>
   <video
     id="my-video"
     class="video-js"
     controls
-    autoplay="autoplay"
+    autoplay
     preload="auto"
-<?php //    width="640"
-//height="264"
-//poster="MY_VIDEO_POSTER.jpg"
+    width="640"
+    height="264"
+<?php //poster="MY_VIDEO_POSTER.jpg"
 ?>
     data-setup="{}"
   >
-  <source src="<?php echo($video); ?>" type="<?php echo($mimetype); ?>" />
+  <source src="<?php echo($playfile); ?>" type="<?php echo($mimetype); ?>" />
     <p class="vjs-no-js">
       To view this video please enable JavaScript, and consider upgrading to a
       web browser that
@@ -96,29 +104,6 @@ $all_media = scan_files();
       >
     </p>
   </video>
-<?php } else if ($audio) { ?>
-<audio
-    id="my-video"
-    class="video-js"
-    controls
-    autoplay="autoplay"
-    preload="auto"
-    width="640"
-    height="264"
-<?php
-//poster="MY_VIDEO_POSTER.jpg"
-?>
-    data-setup="{}"
-  >
-  <source src="<?php echo($audio); ?>" type="<?php echo($mimetype); ?>" />
-    <p class="vjs-no-js">
-      To view this video please enable JavaScript, and consider upgrading to a
-      web browser that
-      <a href="https://videojs.com/html5-video-support/" target="_blank"
-        >supports HTML5 video</a
-      >
-    </p>
-  </audio>
 
 <?php } ?>
 
