@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 
-const rootdir = process.argv.length === 3 ? process.argv[2] : process.cwd();
+const rootdir = process.argv.length === 3 ? process.argv[2] : '.';
 
 const formats = {
     mp4:'video/mp4', webm:'video/webm',
@@ -36,7 +36,7 @@ async function parse_paths(root) {
             const file = {p, dir, root, base, name, ext, basehash, mimetype};
 	    indexed.push(file);
 	    by_hash[basehash] = file;
-            process.stdout.write(`<a id="${basehash}" href="/index.php?hash=${hash}&mimetype=${mimetype}&file=${encodeURIComponent(p)}">${base}</a>\n`);
+            process.stdout.write(`<a id="${basehash}" href="/index.php?file=${encodeURIComponent(p)}&mimetype=${encodeURIComponent(mimetype)}&hash=${basehash}">${base}</a><br/>\n`);
         }
     }
     

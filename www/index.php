@@ -1,8 +1,8 @@
 <?php
 $playfile = null;
-$mimetype = isset($_GET['mimetype']) && $_GET['mimetype'] : null;
-$playfile = isset($_GET['file']) && $_GET['file'] : null;
-$playhash = isset($_GET['hash']) && $_GET['hash'] : null;
+$mimetype = isset($_GET['mimetype']) ? $_GET['mimetype'] : null;
+$playfile = isset($_GET['file']) ? $_GET['file'] : null;
+$playhash = isset($_GET['hash']) ? $_GET['hash'] : null;
 ?>
 
 <!DOCTYPE html>
@@ -17,7 +17,7 @@ $playhash = isset($_GET['hash']) && $_GET['hash'] : null;
 
 <body>
 <?php
-if ($playfile !== null && $mimetype !== null) { ?>
+if ($playfile !== null) { ?>
   <video
     id="my-video"
     class="video-js"
@@ -25,8 +25,7 @@ if ($playfile !== null && $mimetype !== null) { ?>
     autoplay
     preload="auto"
     width="640"
-    height="264"
-    data-setup="{\"liveui\":true}"
+    data-setup="{liveui:true}"
   >
   <source src="<?php echo($playfile); ?>" type="<?php echo($mimetype); ?>" />
     <p class="vjs-no-js">
@@ -43,7 +42,7 @@ if ($playfile !== null && $mimetype !== null) { ?>
 <script src="https://vjs.zencdn.net/7.8.3/video.js"></script>
 
 <?php
-	require_once(__ROOT__.'/urllcache');
+	require_once('urlcache');
 ?>
 
 </body>
