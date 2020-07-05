@@ -29,13 +29,14 @@ async function parse_paths(root) {
      //   }
         const {dir, root, base, name, ext} = path.parse(p);
       if (formats.hasOwnProperty(ext.substr(1))) {
+	    const mimetype = formats[ext.substr(1)];
             const h = crypto.createHash('shake256').update(p);
             h.update(base);
             const basehash = h.digest('hex');
-            const file = {p, dir, root, base, name, ext, basehash};
+            const file = {p, dir, root, base, name, ext, basehash, mimetype};
 	    indexed.push(file);
 	    by_hash[basehash] = file;
-            process.stdout.write(`<a id="${basehash}" href="/index.php?file=${encodeURIComponent(p)}">${base}</a>\n`);
+            process.stdout.write(`<a id="${basehash}" href="/index.php?hash=${hash}&mimetype=${mimetype}&file=${encodeURIComponent(p)}">${base}</a>\n`);
         }
     }
     

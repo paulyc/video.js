@@ -1,73 +1,8 @@
 <?php
 $playfile = null;
-$video = null;
-$audio = null;
-$mimetype = null;
-if (isset($_GET['file'])) {
-	$file = $_GET['file'];
-	$pathparts = pathinfo($file);
-	switch ($pathparts['extension']) {
-	case 'mp4':
-		$playfile = $file;
-		$mimetype = 'video/mp4';
-		break;
-	case 'webm':
-		$playfile = $file;
-		$mimetype = 'video/webm';
-		break;
-	case 'flac':
-		$playfile = $file;
-		$mimetype = 'audio/flac';
-		break;
-	case 'mp3':
-		$playfile = $file;
-		$mimetype = 'audio/mp3';
-		break;
-	case 'aac':
-	case 'm4a':
-		$playfile = $file;
-		$mimetype = 'audio/mp4';
-		break;
-	case 'ogg':
-		$playfile = $file;
-		$mimetype = 'audio/ogg';
-		break;
-	default:
-		$playfile = $file;
-		$mimetype = 'video/mp4'; // ?? best guess ??
-		break;
-	}
-}
-
-function scan_files($path = '.') {
-	$media = [];
-	$files = scandir($path);
-	foreach ($files as &$fname) {
-		if ($fname === '.' || $fname === '..') {
-			continue;
-		}
-		$filepath = $path === '.' ? $fname : $path . '/' . $fname;
-		if (is_dir($filepath)) {
-			$media = array_merge($media, scan_files($filepath));
-		} else if (is_file($filepath)) {
-			$pathparts = pathinfo($filepath);
-			if (
-				$pathparts['extension'] === 'mp4' || 
-				$pathparts['extension'] === 'ogg' || 
-				$pathparts['extension'] === 'webm' ||
-				$pathparts['extension'] === 'flac' ||
-				$pathparts['extension'] === 'mp3' ||
-				$pathparts['extension'] === 'aac' ||
-				$pathparts['extension'] === 'm4a'
-			) {
-				$media[] = $filepath;
-			}
-		}
-	}
-	return $media;
-}
-
-$all_media = scan_files();
+$mimetype = isset($_GET['mimetype']) && $_GET['mimetype'] : null;
+$playfile = isset($_GET['file']) && $_GET['file'] : null;
+$playhash = isset($_GET['hash']) && $_GET['hash'] : null;
 ?>
 
 <!DOCTYPE html>
@@ -82,7 +17,7 @@ $all_media = scan_files();
 
 <body>
 <?php
-if ($mimetype !== null) { ?>
+if ($playfile !== null && $mimetype !== null) { ?>
   <video
     id="my-video"
     class="video-js"
@@ -91,7 +26,7 @@ if ($mimetype !== null) { ?>
     preload="auto"
     width="640"
     height="264"
-    data-setup="{liveui:true}"
+    data-setup="{\"liveui\":true}"
   >
   <source src="<?php echo($playfile); ?>" type="<?php echo($mimetype); ?>" />
     <p class="vjs-no-js">
@@ -108,11 +43,7 @@ if ($mimetype !== null) { ?>
 <script src="https://vjs.zencdn.net/7.8.3/video.js"></script>
 
 <?php
-foreach ($all_media as &$f) {
-	$pathparts = pathinfo($f);
-	echo('<a href="/index.php?file=' . urlencode($f) . '">' . $pathparts['basename'] . '</a><br/>' . "\n");
-}
-
+	require_once(__ROOT__.'/urllcache');
 ?>
 
 </body>
