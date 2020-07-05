@@ -77,7 +77,7 @@ $all_media = scan_files();
 
   <!-- If you'd like to support IE8 (for Video.js versions prior to v7) -->
   <script type="text/javascript" src="https://vjs.zencdn.net/ie8/1.1.2/videojs-ie8.min.js"></script>
-  <script type="text/javascript" src="paulflix.js"></script>
+  <script type="text/javascript" src="paulyflix.js"></script>
 </head>
 
 <body>
@@ -91,9 +91,7 @@ if ($mimetype !== null) { ?>
     preload="auto"
     width="640"
     height="264"
-<?php //poster="MY_VIDEO_POSTER.jpg"
-?>
-    data-setup="{}"
+    data-setup="{liveui:true}"
   >
   <source src="<?php echo($playfile); ?>" type="<?php echo($mimetype); ?>" />
     <p class="vjs-no-js">
