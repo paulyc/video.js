@@ -20,15 +20,25 @@ async function* walk(dir) {
     }
 }
 
+function insensitiveStringSorter(a,b) {
+	a = a.toLowerCase();
+	b = b.toLowerCase();
+	if (a < b) {
+		return -1;
+	} else if (a > b) {
+		return 1;
+	} else {
+		return 0;
+	}
+}
+
 async function parse_paths(root) {
     const indexed = [];
     const by_hash = {};
     for await (const p of walk(root)) {
- //       if (p.startsWith('./')) {
-   //         p = p.substr(2);
-     //   }
         const {dir, root, base, name, ext} = path.parse(p);
-      if (formats.hasOwnProperty(ext.substr(1))) {
+        if (formats.hasOwnProperty(ext.substr(1))) {
+            // should be playable
 	    const mimetype = formats[ext.substr(1)];
             const h = crypto.createHash('shake256').update(p);
             h.update(base);
@@ -36,15 +46,16 @@ async function parse_paths(root) {
             const file = {p, dir, root, base, name, ext, basehash, mimetype};
 	    indexed.push(file);
 	    by_hash[basehash] = file;
-            process.stdout.write(`<a id="${basehash}" href="/index.php?file=${encodeURIComponent(p)}&mimetype=${encodeURIComponent(mimetype)}&hash=${basehash}">${base}</a><br/>\n`);
         }
     }
+    indexed.sort((a,b) => insensitiveStringSorter(a.base, b.base));
+    process.stdout.write(`<a id="${basehash}" href="/index.php?&hash=${basehash}">${base}</a><br/>\n`);
     
     return {indexed, by_hash};
 }
 
 parse_paths(rootdir)
-.then(res => console.error(JSON.stringify(res, null, '  ')))
+.then(res => console.error(`const files = ${JSON.stringify(res, null, '  ')};`))
 .catch(e => console.error(e, 'error'))
 .finally(() => console.log('\n'));
 
