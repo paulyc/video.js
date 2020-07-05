@@ -48,8 +48,8 @@ async function parse_paths(root) {
 	    by_hash[basehash] = file;
         }
     }
-    indexed.sort((a,b) => insensitiveStringSorter(a.base, b.base));
-    process.stdout.write(`<a id="${basehash}" href="/index.php?&hash=${basehash}">${base}</a><br/>\n`);
+    indexed.sort((a,b) => insensitiveStringSorter(a.p, b.p));
+    indexed.forEach(f => process.stdout.write(`<a id="${f.basehash}" href="/index.php?file=${f.p}&mimetype=${f.mimetype}&hash=${f.basehash}">${f.base}</a><br/>\n`));
     
     return {indexed, by_hash};
 }

@@ -1,8 +1,7 @@
 <?php
-$playfile = null;
-$mimetype = isset($_GET['mimetype']) ? $_GET['mimetype'] : null;
+$playhash = isset($_GET['hash']) ? $_GET['hash'] : '';
 $playfile = isset($_GET['file']) ? $_GET['file'] : null;
-$playhash = isset($_GET['hash']) ? $_GET['hash'] : null;
+$mimetype = isset($_GET['mimetype']) ? $_GET['mimetype'] : null;
 ?>
 
 <!DOCTYPE html>
@@ -16,8 +15,6 @@ $playhash = isset($_GET['hash']) ? $_GET['hash'] : null;
 </head>
 
 <body>
-<?php
-if ($playfile !== null) { ?>
   <video
     id="my-video"
     class="video-js"
@@ -25,9 +22,16 @@ if ($playfile !== null) { ?>
     autoplay
     preload="auto"
     width="640"
-    data-setup="{liveui:true}"
+    data-setup="{}"
   >
-  <source src="<?php echo($playfile); ?>" type="<?php echo($mimetype); ?>" />
+<?php if ($playfile !== null) { ?>
+    <source
+      src="<?php echo($playfile); ?>"
+<?php if ($mimetype !== null) { ?>
+      type="<?php echo($mimetype); ?>"
+<?php } ?>
+    >
+<?php } ?>
     <p class="vjs-no-js">
       To view this video please enable JavaScript, and consider upgrading to a
       web browser that
@@ -36,8 +40,6 @@ if ($playfile !== null) { ?>
       >
     </p>
   </video>
-
-<?php } ?>
 
 <script src="https://vjs.zencdn.net/7.8.3/video.js"></script>
 

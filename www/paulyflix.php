@@ -1,5 +1,7 @@
 <?php
-$playhash = isset($_GET['hash']) ? $_GET['hash'] : null;
+$playhash = isset($_GET['hash']) ? $_GET['hash'] : '';
+$playfile = isset($_GET['file']) ? $_GET['file'] : null;
+$mimetype = isset($_GET['mimetype']) ? $_GET['mimetype'] : null;
 ?>
 
 <!DOCTYPE html>
@@ -13,10 +15,6 @@ $playhash = isset($_GET['hash']) ? $_GET['hash'] : null;
 </head>
 
 <body>
-<?php
-if ($playhash !== null) {
-?>
-  <input type="hidden" id="playhash" value="<?php echo($playhash); ?>" />
   <video
     id="my-video"
     class="video-js"
@@ -26,6 +24,14 @@ if ($playhash !== null) {
     width="640"
     data-setup="{}"
   >
+<?php if ($playfile !== null) { ?>
+    <source
+      src="<?php echo($playfile); ?>"
+<?php if ($mimetype !== null) { ?>
+      type="<?php echo($mimetype); ?>"
+<?php } ?>
+    >
+<?php } ?>
     <p class="vjs-no-js">
       To view this video please enable JavaScript, and consider upgrading to a
       web browser that
@@ -33,7 +39,7 @@ if ($playhash !== null) {
         >supports HTML5 video</a
       >
     </p>
-  </video-js>
+  </video>
 
 <script src="https://vjs.zencdn.net/7.8.3/video.js"></script>
 
