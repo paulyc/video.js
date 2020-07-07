@@ -9,6 +9,7 @@ const rootdir = process.argv.length === 3 ? process.argv[2] : '.';
 const formats = {
     mp4:'video/mp4', webm:'video/webm',
     flac:'audio/flac', mp3: 'audio/mp3', aac: 'audio/aac', m4a: 'audio/aac',
+    opus: 'audio/ogg', ogg: 'audio/ogg', oga: 'audio/ogg',
 };
 
 async function* walk(dir) {
@@ -49,7 +50,10 @@ async function parse_paths(root) {
         }
     }
     indexed.sort((a,b) => insensitiveStringSorter(a.p, b.p));
-    indexed.forEach(f => process.stdout.write(`<a id="${f.basehash}" href="/index.php?file=${f.p}&mimetype=${f.mimetype}&hash=${f.basehash}">${f.base}</a><br/>\n`));
+    indexed.forEach(f => process.stdout.write(
+`<a id="${f.basehash}" href="/index.php?file=${f.p}&mimetype=${f.mimetype}&hash=${f.basehash}">${f.base}</a>&nbsp;
+ <a id="download-${f.basehash}" href="/${f.p}" download>[Download]</a><br/>`
+    ));
     
     return {indexed, by_hash};
 }

@@ -11,7 +11,13 @@ $mimetype = isset($_GET['mimetype']) ? $_GET['mimetype'] : null;
 
   <!-- If you'd like to support IE8 (for Video.js versions prior to v7) -->
   <script type="text/javascript" src="https://vjs.zencdn.net/ie8/1.1.2/videojs-ie8.min.js"></script>
-  <script type="text/javascript" src="paulyflix.js"></script>
+  <script type="text/javascript">
+    const player = videojs('my-video');
+
+    player.ready(function() {
+      return player.play();
+    });
+  </script>
 </head>
 
 <body>
