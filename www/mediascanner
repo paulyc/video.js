@@ -9,7 +9,7 @@ const rootdir = process.argv.length === 3 ? process.argv[2] : '.';
 const formats = {
     mp4:'video/mp4', webm:'video/webm',
     flac:'audio/flac', mp3: 'audio/mp3', aac: 'audio/aac', m4a: 'audio/aac',
-    opus: 'audio/ogg', ogg: 'audio/ogg', oga: 'audio/ogg',
+    opus: 'audio/ogg', ogg: 'audio/ogg', oga: 'audio/ogg', ogv: 'video/ogg',
 };
 
 async function* walk(dir) {
@@ -59,7 +59,18 @@ async function parse_paths(root) {
 }
 
 parse_paths(rootdir)
-.then(res => console.error(`const files = ${JSON.stringify(res, null, '  ')};`))
+.then(res => console.error(`
+  function FileMgr(){}
+  FileMgr.getNextAfterHash = function (hash) {
+  	const indx = FileMgr.files.indexed.findIndex(o => o.basehash === hash) + 1;
+	if (indx < FileMgr.files.indexed.length) {
+		return FileMgr.files.indexed[indx];
+	} else {
+		return null;
+	}
+  };
+  FileMgr.files = ${JSON.stringify(res, null, '  ')};
+`))
 .catch(e => console.error(e, 'error'))
 .finally(() => console.log('\n'));
 

@@ -1,3 +1,3 @@
 _:
-	node mediascanner.js > urlcache 2> files.json
+	node mediascanner > urlcache 2> files.js
 .PHONY: _
