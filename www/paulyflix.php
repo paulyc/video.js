@@ -23,7 +23,8 @@ $mimetype = isset($_GET['mimetype']) ? $_GET['mimetype'] : null;
     controls
     autoplay
     preload="auto"
-    width="640"
+    height="auto"
+    min-width="480"
     data-setup="{}"
   >
 <?php if ($playfile !== null) { ?>
@@ -46,15 +47,17 @@ $mimetype = isset($_GET['mimetype']) ? $_GET['mimetype'] : null;
   <script type="text/javascript" src="/video.min.js"></script>
   <script type="text/javascript">
     const player = videojs('my-video');
-    player.ready(function() {
+    const onReady = function() {
         return player.play();
-    });
+    };
+    player.on('ready', onReady);
 
 <?php if ($playhash) { ?>
     player.on('ended', function() {
         const next = FileMgr.getNextAfterHash('<?php echo($playhash); ?>');
         if (next !== null) {
-            player.src({type: next.mimetype, src: encodeURIComponent(next.p)});
+		player.on('ready', onReady);
+		player.src({type: next.mimetype, src: encodeURIComponent(next.p)});
         }
     });
 <?php } ?>
