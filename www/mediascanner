@@ -35,18 +35,17 @@ function insensitiveStringSorter(a,b) {
 
 async function parse_paths(root) {
     const indexed = [];
-    const by_hash = {};
     for await (const p of walk(root)) {
         const {dir, root, base, name, ext} = path.parse(p);
         if (formats.hasOwnProperty(ext.substr(1))) {
             // should be playable
-	    const mimetype = formats[ext.substr(1)];
+            const mimetype = formats[ext.substr(1)];
             const h = crypto.createHash('shake256').update(p);
             h.update(base);
             const basehash = h.digest('hex');
-            const file = {p, dir, root, base, name, ext, basehash, mimetype};
-	    indexed.push(file);
-	    by_hash[basehash] = file;
+            const sources = [{src: p, type: mimetype}]
+            const file = {p, dir, root, base, name, ext, basehash, mimetype, sources};
+	        indexed.push(file);
         }
     }
     indexed.sort((a,b) => insensitiveStringSorter(a.p, b.p));
@@ -55,21 +54,22 @@ async function parse_paths(root) {
  <a id="download-${f.basehash}" href="/${f.p}" download>[Download]</a><br/>`
     ));
     
-    return {indexed, by_hash};
+    return indexed;
 }
 
 parse_paths(rootdir)
 .then(res => console.error(`
-  function FileMgr(){}
-  FileMgr.getNextAfterHash = function (hash) {
-  	const indx = FileMgr.files.indexed.findIndex(o => o.basehash === hash) + 1;
-	if (indx < FileMgr.files.indexed.length) {
-		return FileMgr.files.indexed[indx];
-	} else {
-		return null;
-	}
-  };
-  FileMgr.files = ${JSON.stringify(res, null, '  ')};
+    function FileMgr(){}
+        FileMgr.getNextAfterHash = function (hash) {
+        const indx = FileMgr.files.findIndex(o => o.basehash === hash) + 1;
+        if (indx < FileMgr.files.length) {
+            return FileMgr.files[indx];
+        } else {
+            return null;
+        }
+    };
+    FileMgr.files = ${JSON.stringify(res, null, '  ')};
+    FileMgr.filesAsPlaylist = () => FileMgr.files.map()
 `))
 .catch(e => console.error(e, 'error'))
 .finally(() => console.log('\n'));

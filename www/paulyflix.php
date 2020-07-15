@@ -46,7 +46,7 @@ $mimetype = isset($_GET['mimetype']) ? $_GET['mimetype'] : null;
 
   <script type="text/javascript" src="/video.min.js"></script>
   <script type="text/javascript">
-const player = videojs('my-video');
+    const player = videojs('my-video');
     const info = { playhash: '<?php echo($playhash); ?>' };
     const onReady = function() {
         return player.play();
@@ -57,9 +57,9 @@ const player = videojs('my-video');
     const onEnd = function() {
         const next = FileMgr.getNextAfterHash(info.playhash);
         if (next !== null) {
-		player.on('ready', onReady);
-		player.src({type: next.mimetype, src: encodeURIComponent(next.p)});
-		info.playhash = next.basehash;
+          player.on('ready', onReady);
+          player.src({type: next.mimetype, src: encodeURIComponent(next.p)});
+          info.playhash = next.basehash;
         }
     };
     player.on('ended', onEnd);
